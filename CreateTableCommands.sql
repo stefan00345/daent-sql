@@ -47,13 +47,44 @@ CREATE TABLE Mitarbeiter(
     --Referenz für Filialleiter
     FK_Filialleiter_Von_Filiale INT FOREIGN KEY REFERENCES Filiale(FilialID));
 
+--Abschnitt Produkte
+--Tabelle Produktgruppe
+CREATE TABLE Produktgruppe(
+    ID INT PRIMARY KEY NOT NULL,
+    Bezeichnung VARCHAR(40) NOT NULL);
 
+--Tabelle Lieferanten
+CREATE TABLE Lieferanten(
+    LieferantenID INT PRIMARY KEY NOT NULL IDENTITY,
+    Name VARCHAR(50) NOT NULL,
+    Adresse VARCHAR(60),
+    IBAN VARCHAR(40));
 
+--Tabelle Produkte
+CREATE TABLE Produkte(
+    ProduktID INT PRIMARY KEY NOT NULL IDENTITY,
+    Bezeichnung VARCHAR(60) NOT NULL,
+    UVP MONEY,
+    Verkaufspreis MONEY,
+    Status VARCHAR(20),
+    Gewicht FLOAT);
 
+--Tabelle Rabatttyp
+CREATE TABLE Rabatttyp(
+    TypID INT PRIMARY KEY NOT NULL,
+    Bezeichnung VARCHAR(20) NOT NULL);
+
+--Tabelle Rabatt
+CREATE TABLE Rabatt(
+    RabattID INT PRIMARY KEY NOT NULL,
+    Rabattcode VARCHAR(40),
+    Typ INT NOT NULL FOREIGN KEY REFERENCES Rabatttyp(TypID),
+    Wert VARCHAR(10));
 
 
 
 --Testen
+/*
 INSERT INTO Lager VALUES ('Hauptlager','Klagenfurt');
 INSERT INTO Filiale VALUES ('Test','Graz');
 SELECT * FROM Filiale;
@@ -64,10 +95,6 @@ INSERT INTO Mitarbeiter(Vorname,Nachname,Adresse,Gehalt,IBAN,FK_Mitarbeiter_Fili
 
 SELECT * FROM Mitarbeiter WHERE FK_Filialleiter_Von_Filiale IS NOT NULL;
 SELECT Vorname FROM Mitarbeiter WHERE FK_Filialleiter_Von_Filiale = (SELECT FilialID FROM Filiale WHERE Adresse = 'Graz');
-
-
-
-
-
+*/
 
 
