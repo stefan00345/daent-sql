@@ -1,3 +1,5 @@
+USE projekt_ima17_08;
+
 --Tabelle Kunden
 CREATE TABLE Kunden(
     KundenID INT PRIMARY KEY NOT NULL IDENTITY,
@@ -8,7 +10,7 @@ CREATE TABLE Kunden(
     Email VARCHAR(50),
     Adresse VARCHAR(60));
 
---Tabelle Kundenkarte 
+--Tabelle Kundenkarte
 CREATE TABLE Kundenkarte(
     KarteID INT PRIMARY KEY NOT NULL IDENTITY,
     Punktestand INT NOT NULL DEFAULT 0,
@@ -81,6 +83,50 @@ CREATE TABLE Rabatt(
     Typ INT NOT NULL FOREIGN KEY REFERENCES Rabatttyp(TypID),
     Wert VARCHAR(10));
 
+--Tabelle Lagerbestand
+CREATE TABLE Lagerbestand(
+    Menge INT NOT NULL,
+    FK_ProduktID INT NOT NULL FOREIGN KEY REFERENCES Produkte(ProduktID),
+    FK_LagerID INT NOT NULL FOREIGN KEY REFERENCES Lager(LagerID));
+
+--Tabelle Einkauf
+CREATE TABLE Einkauf(
+    Einkaufsnummer INT IDENTITY PRIMARY KEY NOT NULL,
+    Zahlungsmethode VARCHAR(20),
+    Datum DATE DEFAULT SYSDATETIME() NOT NULL,
+    FK_Einkauf_Rabatt INT FOREIGN KEY REFERENCES Rabatt(RabattID),
+    FK_Einkauf_Kunde INT FOREIGN KEY REFERENCES Kunden(KundenID) NOT NULL);
+
+CREATE TABLE Einkaufsposition(
+    FK_Pos_Einkauf INT NOT NULL REFERENCES Einkauf(Einkaufsnummer),
+    FK_Pos_Produkt INT NOT NULL REFERENCES Produkte(ProduktID),
+    Menge INT NOT NULL,
+    PRIMARY KEY (FK_Pos_Einkauf,FK_Pos_Produkt));
+
+--Lieferposition (Lieferanten liefern Produkte in bestimmten Mengen)
+CREATE TABLE Lieferposition(
+    FK_Pos_Produkt INT NOT NULL REFERENCES Produkte(ProduktID),
+    FK_Pos_Lieferanten INT NOT NULL REFERENCES Lieferanten(LieferantenID),
+    Menge INT NOT NULL,
+    Einkaufspreis MONEY,
+    Datum DATE DEFAULT SYSDATETIME());
+
+--Inserts (Test)
+INSERT INTO Kunden VALUES('Marcel','Koschu','02-06-1998',1234,'meinemail','meineadresse');
+SELECT * FROM Kunden;
+SELECT * FROM Produkte;
+SELECT * FROM Einkaufsposition;
+SELECT * FROM Einkauf;
+INSERT INTO Einkauf(Zahlungsmethode,FK_Einkauf_Kunde) VALUES('PayPal',1);
+INSERT INTO Einkaufsposition(FK_Pos_Einkauf,FK_Pos_Produkt,Menge) VALUES (1,1,200);
+INSERT INTO Einkaufsposition(FK_Pos_Einkauf,FK_Pos_Produkt,Menge) VALUES (1,2,300);
+
+SELECT * FROM Einkaufsposition;
+
+
+
+
+
 
 
 --Testen
@@ -88,13 +134,47 @@ CREATE TABLE Rabatt(
 INSERT INTO Lager VALUES ('Hauptlager','Klagenfurt');
 INSERT INTO Filiale VALUES ('Test','Graz');
 SELECT * FROM Filiale;
-SELECT * FROM Mitarbeiter;
+SELECT * FROM Mitarbeiter; */
 
 INSERT INTO Mitarbeiter(Vorname,Nachname,Adresse,Gehalt,IBAN,FK_Mitarbeiter_Filiale) VALUES ('Stefan','Ulbel','Graz',200.00,'AT 342',1);
 INSERT INTO Mitarbeiter(Vorname,Nachname,Adresse,Gehalt,IBAN,FK_Mitarbeiter_Filiale,FK_Filialleiter_Von_Filiale) VALUES ('Marcel','Koschu','Graz',200.00,'AT 342',1,1);
 
-SELECT * FROM Mitarbeiter WHERE FK_Filialleiter_Von_Filiale IS NOT NULL;
-SELECT Vorname FROM Mitarbeiter WHERE FK_Filialleiter_Von_Filiale = (SELECT FilialID FROM Filiale WHERE Adresse = 'Graz');
-*/
+--SELECT * FROM Mitarbeiter WHERE FK_Filialleiter_Von_Filiale IS NOT NULL;
+--SELECT Vorname FROM Mitarbeiter WHERE FK_Filialleiter_Von_Filiale = (SELECT FilialID FROM Filiale WHERE Adresse = 'Graz');
+
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Holzstange', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Holzbohrer', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Leim', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Feile', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Schleifpapier', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Kanister', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Handschuhe', 10, 10, 0, 1.0)
+INSERT INTO Produkte(Bezeichnung,UVP,Verkaufspreis,Status,Gewicht) VALUES ('Sicherheitsschuhe', 10, 10, 0, 1.0)
+
+INSERT INTO Lager(LagerID,Lagername,Standort) VALUES (0, 'Hauptlager Graz', 'Graz')
+INSERT INTO Lager(LagerID,Lagername,Standort) VALUES (1, 'Hauptlager Wien', 'Wien')
+INSERT INTO Lager(LagerID,Lagername,Standort) VALUES (2, 'Hauptlager Linz', 'Linz')
+
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (1, 0, 0)
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (3, 1, 0)
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (5, 2, 0)
+
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (10, 0, 1)
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (3, 1, 1)
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (5, 2, 1)
+
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (6, 5, 2)
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (25, 4, 2)
+INSERT INTO Lagerbestand(Menge,FK_ProduktID,FK_LagerID) VALUES (45, 2, 2)
+
+
+
+
+
+
+
+
+
+
 
 
