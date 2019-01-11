@@ -34,6 +34,12 @@ CREATE TABLE Filiale(
     Bezeichnung VARCHAR(50) NOT NULL,
     Adresse VARCHAR(60));
 
+--Tabelle Stellenposition
+CREATE TABLE Stellenposition(
+    StellenID INT PRIMARY KEY NOT NULL,
+    Bezeichnung VARCHAR(20) NOT NULL);
+
+
 --Tabelle Mitarbeiter
 CREATE TABLE Mitarbeiter(
     MitarbeiterID INT PRIMARY KEY NOT NULL IDENTITY,
@@ -46,8 +52,8 @@ CREATE TABLE Mitarbeiter(
     FK_Mitarbeiter_Lager INT FOREIGN KEY REFERENCES Lager(LagerID),
     --Referenz zur Filiale
     FK_Mitarbeiter_Filiale INT FOREIGN KEY REFERENCES Filiale(FilialID),
-    --Referenz für Filialleiter
-    FK_Filialleiter_Von_Filiale INT FOREIGN KEY REFERENCES Filiale(FilialID));
+    --Referenz für Stelle
+    FK_Mitarbeiter_Stelle INT FOREIGN KEY REFERENCES Stellenposition(StellenID));
 
 --Abschnitt Produkte
 --Tabelle Produktgruppe
@@ -114,6 +120,11 @@ CREATE TABLE Lieferposition(
 
 --Inserts (Test)
 INSERT INTO Kunden VALUES('Marcel','Koschu','02-06-1998',1234,'meinemail','meineadresse');
+
+INSERT INTO Stellenposition VALUES(1,'Filialleiter');
+INSERT INTO Stellenposition VALUES(2,'Kassierer');
+INSERT INTO Stellenposition VALUES(3,'Allgemein');
+INSERT INTO Stellenposition VALUES(4,'Reinigung'); -- Weitere Einträge wie CEO, Sekretariat, Berater usw.
 SELECT * FROM Kunden;
 SELECT * FROM Produkte;
 SELECT * FROM Einkaufsposition;
