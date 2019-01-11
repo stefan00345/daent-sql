@@ -85,9 +85,10 @@ CREATE TABLE Rabatt(
 
 --Tabelle Lagerbestand
 CREATE TABLE Lagerbestand(
+    FK_Bestand_Produkt INT NOT NULL FOREIGN KEY REFERENCES Produkte(ProduktID),
+    FK_Bestand_Lager INT NOT NULL FOREIGN KEY REFERENCES Lager(LagerID),
     Menge INT NOT NULL,
-    FK_ProduktID INT NOT NULL FOREIGN KEY REFERENCES Produkte(ProduktID),
-    FK_LagerID INT NOT NULL FOREIGN KEY REFERENCES Lager(LagerID));
+    PRIMARY KEY (FK_Bestand_Produkt,FK_Bestand_Lager));
 
 --Tabelle Einkauf
 CREATE TABLE Einkauf(
@@ -120,6 +121,15 @@ SELECT * FROM Einkauf;
 INSERT INTO Einkauf(Zahlungsmethode,FK_Einkauf_Kunde) VALUES('PayPal',1);
 INSERT INTO Einkaufsposition(FK_Pos_Einkauf,FK_Pos_Produkt,Menge) VALUES (1,1,200);
 INSERT INTO Einkaufsposition(FK_Pos_Einkauf,FK_Pos_Produkt,Menge) VALUES (1,2,300);
+
+
+INSERT INTO dbo.Lagerbestand(FK_Bestand_Produkt,FK_Bestand_Lager,Menge) VALUES (5,1,3000);
+INSERT INTO dbo.Lagerbestand(FK_Bestand_Produkt,FK_Bestand_Lager,Menge) VALUES (5,2,300);
+
+SELECT * FROM Lager;
+INSERT INTO Lager VALUES('Kleines Lager','Graz');
+
+UPDATE Lagerbestand SET Menge = 500 WHERE FK_Bestand_Produkt = 5 AND FK_Bestand_Lager = 1;
 
 SELECT * FROM Einkaufsposition;
 
