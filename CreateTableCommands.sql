@@ -48,12 +48,12 @@ CREATE TABLE Mitarbeiter(
     Adresse VARCHAR(60),
     Gehalt MONEY,
     IBAN VARCHAR(40),
+    --Referenz für Stelle
+    FK_Mitarbeiter_Stelle INT NOT NULL FOREIGN KEY REFERENCES Stellenposition(StellenID),
     --Referenz zum Lager
     FK_Mitarbeiter_Lager INT FOREIGN KEY REFERENCES Lager(LagerID),
     --Referenz zur Filiale
-    FK_Mitarbeiter_Filiale INT FOREIGN KEY REFERENCES Filiale(FilialID),
-    --Referenz für Stelle
-    FK_Mitarbeiter_Stelle INT FOREIGN KEY REFERENCES Stellenposition(StellenID));
+    FK_Mitarbeiter_Filiale INT FOREIGN KEY REFERENCES Filiale(FilialID));
 
 --Abschnitt Produkte
 --Tabelle Produktgruppe
